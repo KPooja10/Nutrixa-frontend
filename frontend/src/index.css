@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #070a13;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Custom glowing scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(14, 165, 233, 0.3);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(6, 182, 212, 0.6);
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(10, 15, 30, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card-hover:hover {
+    transform: translateY(-2px);
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: 0 12px 40px 0 rgba(6, 182, 212, 0.15), 0 0 20px rgba(14, 165, 233, 0.05);
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+  }
+
+  .border-glow-cyan {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+  }
+
+  .medical-grid {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+  }
+}
+
+/* Biometric scanning effect animations */
+@keyframes laser-sweep {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+.scanner-laser {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #06b6d4, #0ea5e9, #06b6d4, transparent);
+  box-shadow: 0 0 15px #06b6d4, 0 0 30px #0ea5e9;
+  animation: laser-sweep 4s infinite linear;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+.pulse-ring-slow {
+  animation: pulse-ring 3s infinite ease-in-out;
+}
+
+@keyframes clinical-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.clinical-dot {
+  animation: clinical-blink 2s infinite ease-in-out;
+}

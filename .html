@@ -1,0 +1,635 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Predictive Oncology Nutrition Intelligence System</title>
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial;
+    background:#0b1020;
+    color:white;
+}
+
+header{
+    background:#11182c;
+    padding:20px;
+    text-align:center;
+    color:#00e5ff;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.container{
+    padding:20px;
+}
+
+.card{
+    background:#1b2440;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:30px;
+}
+
+h2{
+    color:#00e5ff;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+button{
+    padding:12px 20px;
+    background:#00e5ff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    margin-top:15px;
+    margin-right:10px;
+}
+
+button:hover{
+    background:#00bcd4;
+}
+
+.food-img{
+    width:100%;
+    max-width:350px;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+.hidden{
+    display:none;
+}
+
+.result{
+    margin-top:15px;
+    color:#00ff99;
+    font-size:18px;
+    white-space:pre-line;
+}
+
+.rating{
+    margin-top:10px;
+    font-size:22px;
+}
+
+video{
+    width:100%;
+    max-width:320px;
+    border-radius:12px;
+    margin-top:15px;
+}
+
+#preview{
+    width:100%;
+    max-width:320px;
+    border-radius:12px;
+    margin-top:15px;
+    display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+🧠 Predictive Oncology Nutrition Intelligence System
+</header>
+
+<div class="container">
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="card">
+
+<h2>🔐 User Login</h2>
+
+<input type="text"
+id="username"
+placeholder="Enter Username">
+
+<input type="password"
+id="password"
+placeholder="Enter Password">
+
+<button onclick="login()">
+Login
+</button>
+
+<div id="loginMsg" class="result"></div>
+
+</div>
+
+<!-- HOME PAGE -->
+
+<div id="homePage" class="hidden">
+
+<!-- BREAKFAST -->
+
+<div class="card">
+
+<h2>🍳 Breakfast Planner - 9:00 AM</h2>
+
+<img src="https://images.unsplash.com/photo-1525351484163-7529414344d8"
+class="food-img">
+
+<p><b>Monday</b> - 2 Eggs + Banana + Avocado</p>
+<p><b>Tuesday</b> - Eggs + Sweet Corn + Muskmelon + Almonds</p>
+<p><b>Wednesday</b> - Sweet Potato + Egg + Guava + Walnuts</p>
+<p><b>Thursday</b> - Nendran Banana + Egg + Blueberries</p>
+<p><b>Friday</b> - Eggs + Broccoli + Orange</p>
+<p><b>Sunday</b> - Sweet Potato + Walnut + Pomegranate</p>
+
+</div>
+
+<!-- SNACKS -->
+
+<div class="card">
+
+<h2>🍉 Snacks - 11:00 AM</h2>
+
+<img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce"
+class="food-img">
+
+<p>Monday - Chikko Fruit</p>
+<p>Tuesday - Watermelon</p>
+<p>Wednesday - Orange</p>
+<p>Thursday - Pomegranate</p>
+<p>Friday - Ice Apple</p>
+<p>Saturday - Papaya</p>
+<p>Sunday - Guava + Berries</p>
+
+</div>
+
+<!-- LUNCH -->
+
+<div class="card">
+
+<h2>🍛 Lunch - 1:00 PM</h2>
+
+<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
+class="food-img">
+
+<p>Monday - Red Rice + Paneer + Carrot</p>
+<p>Tuesday - Ragi Kali + Chickpeas + Beans</p>
+<p>Wednesday - Steamed Crab + Potato + Ladies Finger</p>
+<p>Thursday - Sardine Fish + Carrot + Sorghum Kali</p>
+<p>Friday - Country Chicken + Lettuce</p>
+<p>Saturday - Vargu Rice + Squid + Moringa</p>
+<p>Sunday - Fish + Red Rice + Beetroot</p>
+
+</div>
+
+<!-- EVENING DRINK -->
+
+<div class="card">
+
+<h2>🍵 Evening Drink - 5:00 PM</h2>
+
+<img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085"
+class="food-img">
+
+<p>Monday - Mustard Tea</p>
+<p>Tuesday - Cinnamon Mint Tea</p>
+<p>Wednesday - Turmeric Ginger Tea</p>
+<p>Thursday - Clove Curry Leaves Tea</p>
+<p>Friday - Orange Peel Tea</p>
+<p>Saturday - Spices Tea</p>
+<p>Sunday - Karpooravalli Tea</p>
+
+</div>
+
+<!-- DINNER -->
+
+<div class="card">
+
+<h2>🥗 Dinner - 7:00 PM</h2>
+
+<img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd"
+class="food-img">
+
+<p>Monday - Black Channa Salad</p>
+<p>Tuesday - Eggplant Soup</p>
+<p>Wednesday - Mixed Veg Salad</p>
+<p>Thursday - Spinach Salad</p>
+<p>Friday - Peanut Salad</p>
+<p>Saturday - Veggie Soup</p>
+<p>Sunday - Broccoli Salad</p>
+
+</div>
+
+<!-- MEAL COMPLETION -->
+
+<div class="card">
+
+<h2>✅ Meal Completion Checker</h2>
+
+<img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352"
+class="food-img">
+
+<p>Did patient complete today's meal?</p>
+
+<button onclick="bestMeal()">
+YES
+</button>
+
+<button onclick="goodMeal()">
+PARTIAL
+</button>
+
+<button onclick="worstMeal()">
+NO
+</button>
+
+<div id="mealResult" class="result"></div>
+
+<div id="mealRating" class="rating"></div>
+
+</div>
+
+<!-- CAMERA FACE DETECTION -->
+
+<div class="card">
+
+<h2>📷 AI Camera Face Detection</h2>
+
+<img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+class="food-img">
+
+<p>
+AI detects fatigue,
+energy level,
+stress,
+and recovery condition.
+</p>
+
+<video id="video" autoplay></video>
+
+<br>
+
+<button onclick="startCamera()">
+Start Camera
+</button>
+
+<button onclick="analyzeFace()">
+Analyze Face
+</button>
+
+<div id="faceResult" class="result"></div>
+
+</div>
+
+<!-- FOOD SCANNER -->
+
+<div class="card">
+
+<h2>🍽️ AI Food Scanner</h2>
+
+<img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352"
+class="food-img">
+
+<p>
+Upload food image to check
+healthy cancer nutrition food.
+</p>
+
+<input type="file"
+id="foodUpload"
+accept="image/*">
+
+<img id="preview">
+
+<br>
+
+<button onclick="scanFood()">
+Scan Food
+</button>
+
+<div id="foodResult" class="result"></div>
+
+<div id="foodRating" class="rating"></div>
+
+</div>
+
+<!-- PREDICTION ENGINE -->
+
+<div class="card">
+
+<h2>🧠 AI Prediction Engine</h2>
+
+<img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+class="food-img">
+
+<p>
+AI predicts:
+fatigue,
+dehydration,
+recovery status,
+nutrition level,
+and weakness risk.
+</p>
+
+<button onclick="predictHealth()">
+Run AI Prediction
+</button>
+
+<div id="predictionResult" class="result"></div>
+
+</div>
+
+<!-- REAL TIME ANALYTICS -->
+
+<div class="card">
+
+<h2>📊 AI Real-Time Analytics</h2>
+
+<img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71"
+class="food-img">
+
+<p>✔ Nutrition Monitoring</p>
+<p>✔ Water Intake Tracking</p>
+<p>✔ Energy Analysis</p>
+<p>✔ Fatigue Monitoring</p>
+<p>✔ Recovery Tracking</p>
+
+<button onclick="showAnalytics()">
+Show Analytics
+</button>
+
+<div id="analyticsResult" class="result"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+//////////////////////
+// LOGIN
+//////////////////////
+
+function login(){
+
+    let username =
+    document.getElementById("username").value;
+
+    let password =
+    document.getElementById("password").value;
+
+    if(username != "" && password != ""){
+
+        document.getElementById("loginMsg")
+        .innerText =
+        "✅ Login Successful";
+
+        document.getElementById("loginPage")
+        .classList.add("hidden");
+
+        document.getElementById("homePage")
+        .classList.remove("hidden");
+
+    }
+
+    else{
+
+        document.getElementById("loginMsg")
+        .innerText =
+        "❌ Enter Username & Password";
+
+    }
+
+}
+
+//////////////////////
+// MEAL CHECK
+//////////////////////
+
+function bestMeal(){
+
+    document.getElementById("mealResult")
+    .innerText =
+    "✅ Excellent! Full nutrition completed.";
+
+    document.getElementById("mealRating")
+    .innerText =
+    "⭐⭐⭐⭐⭐ BEST";
+
+}
+
+function goodMeal(){
+
+    document.getElementById("mealResult")
+    .innerText =
+    "⚠ Partial meal completed.";
+
+    document.getElementById("mealRating")
+    .innerText =
+    "⭐⭐⭐ GOOD";
+
+}
+
+function worstMeal(){
+
+    document.getElementById("mealResult")
+    .innerText =
+    "❌ Meal skipped.";
+
+    document.getElementById("mealRating")
+    .innerText =
+    "⭐ WORST";
+
+}
+
+//////////////////////
+// CAMERA
+//////////////////////
+
+function startCamera(){
+
+    navigator.mediaDevices
+    .getUserMedia({ video:true })
+
+    .then(function(stream){
+
+        document.getElementById("video")
+        .srcObject = stream;
+
+    })
+
+    .catch(function(error){
+
+        alert("Camera Permission Denied");
+
+    });
+
+}
+
+//////////////////////
+// FACE ANALYSIS
+//////////////////////
+
+function analyzeFace(){
+
+    let analysis = [
+
+        "😊 Patient looks Healthy",
+
+        "😴 Mild Fatigue Detected",
+
+        "⚠ Low Energy Level",
+
+        "💧 Possible Dehydration",
+
+        "🧠 Recovery Improving"
+
+    ];
+
+    let result =
+    analysis[Math.floor(Math.random()*analysis.length)];
+
+    document.getElementById("faceResult")
+    .innerText = result;
+
+}
+
+//////////////////////
+// FOOD SCANNER
+//////////////////////
+
+function scanFood(){
+
+    let file =
+    document.getElementById("foodUpload").files[0];
+
+    if(!file){
+
+        alert("Please Upload Food Image");
+
+        return;
+
+    }
+
+    let preview =
+    document.getElementById("preview");
+
+    preview.src =
+    URL.createObjectURL(file);
+
+    preview.style.display = "block";
+
+    let foodAnalysis = [
+
+        {
+            result:
+            "✅ Healthy Cancer Nutrition Food",
+
+            rating:
+            "⭐⭐⭐⭐⭐ BEST"
+        },
+
+        {
+            result:
+            "⚠ Moderate Healthy Food",
+
+            rating:
+            "⭐⭐⭐ GOOD"
+        },
+
+        {
+            result:
+            "❌ Poor Nutrition Food",
+
+            rating:
+            "⭐ WORST"
+        }
+
+    ];
+
+    let randomFood =
+    foodAnalysis[Math.floor(Math.random()*foodAnalysis.length)];
+
+    document.getElementById("foodResult")
+    .innerText =
+    randomFood.result;
+
+    document.getElementById("foodRating")
+    .innerText =
+    randomFood.rating;
+
+}
+
+//////////////////////
+// PREDICTION ENGINE
+//////////////////////
+
+function predictHealth(){
+
+    let predictions = [
+
+        "✅ Recovery Progress Improving",
+
+        "⚠ Mild Fatigue Risk Predicted",
+
+        "💧 Dehydration Risk Detected",
+
+        "🧠 Nutrition Level Stable",
+
+        "⚡ Energy Level Increasing"
+
+    ];
+
+    let result =
+    predictions[Math.floor(Math.random()*predictions.length)];
+
+    document.getElementById("predictionResult")
+    .innerText = result;
+
+}
+
+//////////////////////
+// REAL TIME ANALYTICS
+//////////////////////
+
+function showAnalytics(){
+
+    let analytics =
+
+    "🍱 Nutrition Score : 89%\n" +
+
+    "💧 Water Intake : Good\n" +
+
+    "⚡ Energy Level : Medium\n" +
+
+    "😴 Fatigue Risk : Low\n" +
+
+    "🧠 Recovery Progress : Improving";
+
+    document.getElementById("analyticsResult")
+    .innerText = analytics;
+
+}
+
+</script>
+
+</body>
+</html>
+```

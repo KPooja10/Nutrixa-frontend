@@ -1,0 +1,976 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "doctor",
+      "passwordHash": "$2a$10$MGu8tIx/sXV3PS6XaSFQfenM0Lx4Xtkq4mPxCc3vnLPJPjL.sn5NG",
+      "role": "doctor"
+    },
+    {
+      "id": 2,
+      "username": "patient",
+      "passwordHash": "$2a$10$MGu8tIx/sXV3PS6XaSFQfepumchOx9ISDoPeFdzVgh0YV/ap4D0AG",
+      "role": "patient"
+    }
+  ],
+  "patients": [
+    {
+      "id": 1,
+      "patientName": "Alexander Vance",
+      "age": 58,
+      "cancerType": "Lung Cancer",
+      "stage": "Stage III"
+    },
+    {
+      "id": 2,
+      "patientName": "Elena Rostova",
+      "age": 42,
+      "cancerType": "Breast Cancer",
+      "stage": "Stage II"
+    },
+    {
+      "id": 3,
+      "patientName": "Marcus Chen",
+      "age": 67,
+      "cancerType": "Colorectal Cancer",
+      "stage": "Stage IV"
+    },
+    {
+      "id": 4,
+      "patientName": "Sarah Jenkins",
+      "age": 31,
+      "cancerType": "Leukemia",
+      "stage": "Stage I"
+    },
+    {
+      "id": 5,
+      "patientName": "poojasri",
+      "age": 30,
+      "cancerType": "Breast Cancer",
+      "stage": "Stage I"
+    }
+  ],
+  "meal_logs": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.502Z"
+    },
+    {
+      "id": 2,
+      "patientId": 1,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.504Z"
+    },
+    {
+      "id": 3,
+      "patientId": 1,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.506Z"
+    },
+    {
+      "id": 4,
+      "patientId": 1,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.507Z"
+    },
+    {
+      "id": 5,
+      "patientId": 1,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.509Z"
+    },
+    {
+      "id": 6,
+      "patientId": 1,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.510Z"
+    },
+    {
+      "id": 7,
+      "patientId": 1,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.513Z"
+    },
+    {
+      "id": 8,
+      "patientId": 1,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.515Z"
+    },
+    {
+      "id": 9,
+      "patientId": 1,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.517Z"
+    },
+    {
+      "id": 10,
+      "patientId": 1,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.522Z"
+    },
+    {
+      "id": 11,
+      "patientId": 1,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 0,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.524Z"
+    },
+    {
+      "id": 12,
+      "patientId": 1,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.528Z"
+    },
+    {
+      "id": 13,
+      "patientId": 1,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.530Z"
+    },
+    {
+      "id": 14,
+      "patientId": 1,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.533Z"
+    },
+    {
+      "id": 15,
+      "patientId": 1,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.535Z"
+    },
+    {
+      "id": 16,
+      "patientId": 1,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.536Z"
+    },
+    {
+      "id": 17,
+      "patientId": 1,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.538Z"
+    },
+    {
+      "id": 18,
+      "patientId": 1,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.539Z"
+    },
+    {
+      "id": 19,
+      "patientId": 2,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.543Z"
+    },
+    {
+      "id": 20,
+      "patientId": 2,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.544Z"
+    },
+    {
+      "id": 21,
+      "patientId": 2,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.546Z"
+    },
+    {
+      "id": 22,
+      "patientId": 2,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.547Z"
+    },
+    {
+      "id": 23,
+      "patientId": 2,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.549Z"
+    },
+    {
+      "id": 24,
+      "patientId": 2,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.551Z"
+    },
+    {
+      "id": 25,
+      "patientId": 2,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.558Z"
+    },
+    {
+      "id": 26,
+      "patientId": 2,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.561Z"
+    },
+    {
+      "id": 27,
+      "patientId": 2,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.563Z"
+    },
+    {
+      "id": 28,
+      "patientId": 2,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.564Z"
+    },
+    {
+      "id": 29,
+      "patientId": 2,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.570Z"
+    },
+    {
+      "id": 30,
+      "patientId": 2,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.573Z"
+    },
+    {
+      "id": 31,
+      "patientId": 2,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.576Z"
+    },
+    {
+      "id": 32,
+      "patientId": 2,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.578Z"
+    },
+    {
+      "id": 33,
+      "patientId": 2,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.580Z"
+    },
+    {
+      "id": 34,
+      "patientId": 2,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.582Z"
+    },
+    {
+      "id": 35,
+      "patientId": 2,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.584Z"
+    },
+    {
+      "id": 36,
+      "patientId": 2,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.591Z"
+    },
+    {
+      "id": 37,
+      "patientId": 3,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.596Z"
+    },
+    {
+      "id": 38,
+      "patientId": 3,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 0,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.597Z"
+    },
+    {
+      "id": 39,
+      "patientId": 3,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.599Z"
+    },
+    {
+      "id": 40,
+      "patientId": 3,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.602Z"
+    },
+    {
+      "id": 41,
+      "patientId": 3,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.604Z"
+    },
+    {
+      "id": 42,
+      "patientId": 3,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 0,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.612Z"
+    },
+    {
+      "id": 43,
+      "patientId": 3,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.616Z"
+    },
+    {
+      "id": 44,
+      "patientId": 3,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.619Z"
+    },
+    {
+      "id": 45,
+      "patientId": 3,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.621Z"
+    },
+    {
+      "id": 46,
+      "patientId": 3,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.623Z"
+    },
+    {
+      "id": 47,
+      "patientId": 3,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.625Z"
+    },
+    {
+      "id": 48,
+      "patientId": 3,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.626Z"
+    },
+    {
+      "id": 49,
+      "patientId": 3,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.630Z"
+    },
+    {
+      "id": 50,
+      "patientId": 3,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.632Z"
+    },
+    {
+      "id": 51,
+      "patientId": 3,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.635Z"
+    },
+    {
+      "id": 52,
+      "patientId": 3,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.637Z"
+    },
+    {
+      "id": 53,
+      "patientId": 3,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.639Z"
+    },
+    {
+      "id": 54,
+      "patientId": 3,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.641Z"
+    },
+    {
+      "id": 55,
+      "patientId": 4,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.645Z"
+    },
+    {
+      "id": 56,
+      "patientId": 4,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.650Z"
+    },
+    {
+      "id": 57,
+      "patientId": 4,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.653Z"
+    },
+    {
+      "id": 58,
+      "patientId": 4,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.655Z"
+    },
+    {
+      "id": 59,
+      "patientId": 4,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.657Z"
+    },
+    {
+      "id": 60,
+      "patientId": 4,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.659Z"
+    },
+    {
+      "id": 61,
+      "patientId": 4,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.663Z"
+    },
+    {
+      "id": 62,
+      "patientId": 4,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.664Z"
+    },
+    {
+      "id": 63,
+      "patientId": 4,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.667Z"
+    },
+    {
+      "id": 64,
+      "patientId": 4,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.669Z"
+    },
+    {
+      "id": 65,
+      "patientId": 4,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.670Z"
+    },
+    {
+      "id": 66,
+      "patientId": 4,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.672Z"
+    },
+    {
+      "id": 67,
+      "patientId": 4,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.678Z"
+    },
+    {
+      "id": 68,
+      "patientId": 4,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.681Z"
+    },
+    {
+      "id": 69,
+      "patientId": 4,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 1,
+      "nutritionScore": 85,
+      "loggedAt": "2026-05-31T16:08:14.688Z"
+    },
+    {
+      "id": 70,
+      "patientId": 4,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 1,
+      "nutritionScore": 95,
+      "loggedAt": "2026-05-31T16:08:14.692Z"
+    },
+    {
+      "id": 71,
+      "patientId": 4,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 1,
+      "nutritionScore": 90,
+      "loggedAt": "2026-05-31T16:08:14.694Z"
+    },
+    {
+      "id": 72,
+      "patientId": 4,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 1,
+      "nutritionScore": 80,
+      "loggedAt": "2026-05-31T16:08:14.702Z"
+    },
+    {
+      "id": 73,
+      "patientId": 5,
+      "mealType": "early_morning",
+      "mealName": "Warm Ginger Tea & Almonds",
+      "completed": 0,
+      "nutritionScore": null,
+      "loggedAt": "2026-06-01T04:49:37.402Z"
+    },
+    {
+      "id": 74,
+      "patientId": 5,
+      "mealType": "breakfast",
+      "mealName": "High-Protein Oatmeal with Berries",
+      "completed": 0,
+      "nutritionScore": null,
+      "loggedAt": "2026-06-01T04:49:37.404Z"
+    },
+    {
+      "id": 75,
+      "patientId": 5,
+      "mealType": "snacks",
+      "mealName": "Avocado & Chia Seed Pudding",
+      "completed": 0,
+      "nutritionScore": null,
+      "loggedAt": "2026-06-01T04:49:37.408Z"
+    },
+    {
+      "id": 76,
+      "patientId": 5,
+      "mealType": "lunch",
+      "mealName": "Steamed Salmon with Quinoa and Broccolini",
+      "completed": 0,
+      "nutritionScore": null,
+      "loggedAt": "2026-06-01T04:49:37.411Z"
+    },
+    {
+      "id": 77,
+      "patientId": 5,
+      "mealType": "evening_drink",
+      "mealName": "Fortified Whey Protein Shake",
+      "completed": 0,
+      "nutritionScore": null,
+      "loggedAt": "2026-06-01T04:49:37.415Z"
+    },
+    {
+      "id": 78,
+      "patientId": 5,
+      "mealType": "dinner",
+      "mealName": "Light Turkey Broth with Spinach",
+      "completed": 0,
+      "nutritionScore": null,
+      "loggedAt": "2026-06-01T04:49:37.417Z"
+    },
+    {
+      "id": 79,
+      "patientId": 5,
+      "mealType": "breakfast",
+      "mealName": "abcd",
+      "completed": 0,
+      "nutritionScore": 85,
+      "loggedAt": "2026-06-01T05:13:33.446Z"
+    },
+    {
+      "id": 80,
+      "patientId": 5,
+      "mealType": "early_morning",
+      "mealName": "ginger tea ",
+      "completed": 0,
+      "nutritionScore": 100,
+      "loggedAt": "2026-06-01T05:14:21.111Z"
+    },
+    {
+      "id": 81,
+      "patientId": 1,
+      "mealType": "breakfast",
+      "mealName": "abcd",
+      "completed": 0,
+      "nutritionScore": 85,
+      "loggedAt": "2026-06-01T05:14:59.509Z"
+    }
+  ],
+  "water_logs": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "intake": 2500,
+      "loggedAt": "2026-05-31T16:08:14.512Z"
+    },
+    {
+      "id": 2,
+      "patientId": 1,
+      "intake": 2600,
+      "loggedAt": "2026-05-31T16:08:14.529Z"
+    },
+    {
+      "id": 3,
+      "patientId": 1,
+      "intake": 2700,
+      "loggedAt": "2026-05-31T16:08:14.541Z"
+    },
+    {
+      "id": 4,
+      "patientId": 2,
+      "intake": 2500,
+      "loggedAt": "2026-05-31T16:08:14.556Z"
+    },
+    {
+      "id": 5,
+      "patientId": 2,
+      "intake": 2600,
+      "loggedAt": "2026-05-31T16:08:14.574Z"
+    },
+    {
+      "id": 6,
+      "patientId": 2,
+      "intake": 2700,
+      "loggedAt": "2026-05-31T16:08:14.593Z"
+    },
+    {
+      "id": 7,
+      "patientId": 3,
+      "intake": 1200,
+      "loggedAt": "2026-05-31T16:08:14.614Z"
+    },
+    {
+      "id": 8,
+      "patientId": 3,
+      "intake": 1300,
+      "loggedAt": "2026-05-31T16:08:14.628Z"
+    },
+    {
+      "id": 9,
+      "patientId": 3,
+      "intake": 1400,
+      "loggedAt": "2026-05-31T16:08:14.642Z"
+    },
+    {
+      "id": 10,
+      "patientId": 4,
+      "intake": 2500,
+      "loggedAt": "2026-05-31T16:08:14.660Z"
+    },
+    {
+      "id": 11,
+      "patientId": 4,
+      "intake": 2600,
+      "loggedAt": "2026-05-31T16:08:14.676Z"
+    },
+    {
+      "id": 12,
+      "patientId": 4,
+      "intake": 2700,
+      "loggedAt": "2026-05-31T16:08:14.708Z"
+    },
+    {
+      "id": 13,
+      "patientId": 5,
+      "intake": null,
+      "loggedAt": "2026-06-01T04:49:37.420Z"
+    },
+    {
+      "id": 14,
+      "patientId": 1,
+      "intake": 250,
+      "loggedAt": "2026-06-01T11:16:16.609Z"
+    },
+    {
+      "id": 15,
+      "patientId": 1,
+      "intake": 500,
+      "loggedAt": "2026-06-01T11:16:17.952Z"
+    },
+    {
+      "id": 16,
+      "patientId": 1,
+      "intake": 750,
+      "loggedAt": "2026-06-01T11:16:19.612Z"
+    }
+  ],
+  "analytics": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "energy": 82,
+      "hydration": 62,
+      "recovery": 92,
+      "risk": "Low",
+      "updatedAt": "2026-06-01T11:16:19.618Z"
+    },
+    {
+      "id": 2,
+      "patientId": 2,
+      "energy": 85,
+      "hydration": 92,
+      "recovery": 88,
+      "risk": "Low",
+      "updatedAt": "2026-05-31T16:08:14.489Z"
+    },
+    {
+      "id": 3,
+      "patientId": 3,
+      "energy": 40,
+      "hydration": 55,
+      "recovery": 48,
+      "risk": "High",
+      "updatedAt": "2026-05-31T16:08:14.490Z"
+    },
+    {
+      "id": 4,
+      "patientId": 4,
+      "energy": 75,
+      "hydration": 80,
+      "recovery": 82,
+      "risk": "Low",
+      "updatedAt": "2026-05-31T16:08:14.492Z"
+    },
+    {
+      "id": 5,
+      "patientId": 5,
+      "energy": 27,
+      "hydration": 0,
+      "recovery": 30,
+      "risk": "High",
+      "updatedAt": "2026-06-01T05:14:21.118Z"
+    }
+  ],
+  "predictions": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "fatigueRisk": "Low",
+      "recoveryForecast": 92,
+      "deficiencyRisk": "None",
+      "energyTrend": "improving",
+      "hydrationTrend": "stable"
+    },
+    {
+      "id": 2,
+      "patientId": 2,
+      "fatigueRisk": "Low",
+      "recoveryForecast": 91,
+      "deficiencyRisk": "None",
+      "energyTrend": "improving",
+      "hydrationTrend": "stable"
+    },
+    {
+      "id": 3,
+      "patientId": 3,
+      "fatigueRisk": "High",
+      "recoveryForecast": 52,
+      "deficiencyRisk": "Severe",
+      "energyTrend": "declining",
+      "hydrationTrend": "declining"
+    },
+    {
+      "id": 4,
+      "patientId": 4,
+      "fatigueRisk": "Low",
+      "recoveryForecast": 85,
+      "deficiencyRisk": "None",
+      "energyTrend": "improving",
+      "hydrationTrend": "improving"
+    },
+    {
+      "id": 5,
+      "patientId": 5,
+      "fatigueRisk": "High",
+      "recoveryForecast": 30,
+      "deficiencyRisk": "Severe",
+      "energyTrend": "declining",
+      "hydrationTrend": "declining"
+    }
+  ]
+}
