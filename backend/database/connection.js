@@ -113,13 +113,27 @@ const db = {
 
           // Handle INSERT INTO meal_logs
           if (normalizedSql.startsWith('INSERT INTO meal_logs')) {
+            let patientId, mealType, mealName, completed, nutritionScore;
+            if (normalizedSql.includes('0, ?') || normalizedSql.includes('0,?')) {
+              patientId = parseInt(flatArgs[0]);
+              mealType = flatArgs[1];
+              mealName = flatArgs[2];
+              completed = 0;
+              nutritionScore = parseInt(flatArgs[3]);
+            } else {
+              patientId = parseInt(flatArgs[0]);
+              mealType = flatArgs[1];
+              mealName = flatArgs[2];
+              completed = flatArgs[3] === 1 || flatArgs[3] === true ? 1 : 0;
+              nutritionScore = parseInt(flatArgs[4]);
+            }
             const newMeal = {
               id: dbData.meal_logs.length + 1,
-              patientId: parseInt(flatArgs[0]),
-              mealType: flatArgs[1],
-              mealName: flatArgs[2],
-              completed: flatArgs[3] === 1 || flatArgs[3] === true ? 1 : 0,
-              nutritionScore: parseInt(flatArgs[4]),
+              patientId,
+              mealType,
+              mealName,
+              completed,
+              nutritionScore,
               loggedAt: new Date().toISOString()
             };
             dbData.meal_logs.push(newMeal);
@@ -231,6 +245,11 @@ const db = {
           // SELECT * FROM users
           if (normalizedSql.startsWith('SELECT * FROM users')) {
             return dbData.users;
+          }
+
+          // SELECT * FROM meal_logs
+          if (normalizedSql.startsWith('SELECT * FROM meal_logs') && !normalizedSql.includes('WHERE')) {
+            return dbData.meal_logs;
           }
 
           // SELECT * FROM meal_logs WHERE patientId = ?

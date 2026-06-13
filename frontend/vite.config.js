@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
+// https://vitejs.dev/config/ - deployed on github pages
 export default defineConfig({
   plugins: [react()],
-  base: '/PONIS-/',
+  base: '/Nutrixa-frontend/',
 
   server: {
     port: 5173,
