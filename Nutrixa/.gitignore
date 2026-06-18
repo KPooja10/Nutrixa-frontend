@@ -1,0 +1,25 @@
+# Android build outputs
+.gradle/
+build/
+local.properties
+*.iml
+
+# E2E test artifacts
+NutrixaAppiumE2E/node_modules/
+Test_Results/
+*.xlsx
+~$*.xlsx
+
+# Screenshots
+appium_tests/screenshots/
+appium_tests/reports/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE
+.idea/
+.kotlin/
+.vscode/
