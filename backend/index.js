@@ -16,11 +16,20 @@ const PORT = process.env.PORT || 5000;
 
 // Apply Middlewares
 app.use(cors({
-  origin: [
-    'https://kpooja10.github.io',
-    'http://localhost:5173',
-    'http://localhost:3000'
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, adb or curl)
+    if (!origin) return callback(null, true);
+    // Allow localhost, local IPs, and the github pages domain
+    if (origin.startsWith('http://localhost') || 
+        origin.startsWith('http://127.0.0.1') || 
+        origin.startsWith('http://172.') || 
+        origin.startsWith('http://192.') || 
+        origin.startsWith('http://10.') || 
+        origin === 'https://kpooja10.github.io') {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

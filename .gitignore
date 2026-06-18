@@ -37,3 +37,15 @@ out/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+
+# Appium E2E Test Artifacts
+appium_tests/screenshots/
+appium_tests/reports/
+appium-tests/reports/
+*.xlsx
+~$*.xlsx
+
