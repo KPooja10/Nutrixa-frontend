@@ -48,4 +48,6 @@ appium_tests/reports/
 appium-tests/reports/
 *.xlsx
 ~$*.xlsx
+Test_Results/
+
 

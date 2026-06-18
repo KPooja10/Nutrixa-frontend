@@ -1,0 +1,88 @@
+name: Deploy Frontend & E2E Selenium Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      - name: Install & Start Backend Service
+        run: |
+          cd backend
+          npm ci
+          npm run dev &
+        env:
+          PORT: 5000
+
+      - name: Install & Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Start Vite Preview Server
+        run: |
+          cd frontend
+          npx vite preview --port 5173 --host 127.0.0.1 --base /Nutrixa-frontend/ &
+          echo "Waiting for Vite preview server to spin up..."
+          sleep 4
+          curl -I http://127.0.0.1:5173/Nutrixa-frontend/
+          echo "TEST_BASE_URL=http://127.0.0.1:5173/Nutrixa-frontend" >> $GITHUB_ENV
+
+      - name: Run E2E Selenium Tests
+        run: |
+          cd NutrixaE2E
+          npm install
+          npm test
+        env:
+          TEST_BASE_URL: ${{ env.TEST_BASE_URL }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+
+      - name: Inject HTML Report into Built Frontend Dist
+        run: |
+          mkdir -p frontend/dist/reports/latest
+          mkdir -p frontend/dist/reports/history/build-${{ github.run_number }}
+          cp Test_Results/HTML/execution-report.html frontend/dist/reports/latest/execution-report.html
+          cp Test_Results/HTML/execution-report.html frontend/dist/reports/history/build-${{ github.run_number }}/execution-report.html
+          # Also copy the Excel report so it is deployable alongside HTML
+          mkdir -p frontend/dist/reports/excel
+          cp Test_Results/Excel/selenium-report.xlsx frontend/dist/reports/excel/selenium-report.xlsx
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
