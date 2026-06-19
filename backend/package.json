@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
-    "test:e2e": "node tests/run-e2e.js"
+    "test:e2e": "node tests/run-e2e.js",
+    "test:security": "node tests/run-security-only.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
