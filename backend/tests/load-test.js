@@ -28,7 +28,7 @@ export default function () {
   // 2. Doctor Mock Login load check
   const payload = JSON.stringify({
     username: 'doctor',
-    password: 'password123',
+    password: 'doctor123',
   });
   const params = {
     headers: {

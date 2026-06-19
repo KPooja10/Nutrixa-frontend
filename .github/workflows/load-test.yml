@@ -27,6 +27,13 @@ jobs:
           cd backend
           npm ci
           npm run dev &
+          echo "Waiting for backend service to boot on port 5000..."
+          for i in {1..15}; do
+            curl -s http://localhost:5000/health && exit 0
+            sleep 2
+          done
+          echo "⚠️ Backend failed to respond to health check"
+          exit 1
         env:
           PORT: 5000
 
