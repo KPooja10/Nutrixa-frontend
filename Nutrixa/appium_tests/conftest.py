@@ -54,8 +54,7 @@ def pytest_sessionfinish(session, exitstatus):
 def driver():
     """
     Creates ONE Appium driver session for the entire test suite.
-    This is faster — the app launches once and all 14 test modules run in sequence
-    (including security & vulnerability tests).
+    This is faster — the app launches once and all 13 screen tests run in sequence.
     """
     drv = create_driver()
     yield drv

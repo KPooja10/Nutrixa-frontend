@@ -8,3 +8,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .DS_Store
+
+# E2E Test Artifacts
+Test_Results/
+*.xlsx
+~$*.xlsx
+NutrixaE2E/node_modules/
+

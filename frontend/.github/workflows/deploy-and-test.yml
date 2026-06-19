@@ -1,0 +1,82 @@
+name: Deploy Frontend & E2E Selenium Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install & Build Frontend
+        run: |
+          npm ci
+          npm run build
+        env:
+          VITE_API_URL: https://nutrixa-backend.onrender.com
+
+      - name: Configure E2E Test Base URL
+        run: |
+          echo "TEST_BASE_URL=https://kpooja10.github.io/Nutrixa-frontend" >> $GITHUB_ENV
+
+      - name: Run E2E Selenium Tests
+        run: |
+          cd NutrixaE2E
+          npm install
+          npm test
+        env:
+          TEST_BASE_URL: ${{ env.TEST_BASE_URL }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+
+      - name: Inject HTML Report into Built Frontend Dist
+        run: |
+          mkdir -p dist/reports/latest
+          mkdir -p dist/reports/history/build-${{ github.run_number }}
+          cp Test_Results/HTML/execution-report.html dist/reports/latest/execution-report.html
+          cp Test_Results/HTML/execution-report.html dist/reports/history/build-${{ github.run_number }}/execution-report.html
+          mkdir -p dist/reports/excel
+          cp Test_Results/Excel/selenium-report.xlsx dist/reports/excel/selenium-report.xlsx
+          cp Test_Results/Excel/e2e-test-report.xlsx dist/reports/excel/e2e-test-report.xlsx
+          cp Test_Results/Excel/e2e-test-report.xlsx dist/e2e-test-report.xlsx
+
+      - name: Upload E2E Test Results Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-e2e-test-results
+          path: Test_Results/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

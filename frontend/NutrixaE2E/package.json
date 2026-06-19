@@ -1,0 +1,14 @@
+{
+  "name": "nutrixa-e2e",
+  "version": "1.0.0",
+  "description": "E2E Test Suite for Nutrixa Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/mega_web_1100.test.js --reporter utils/excelReporter.js --timeout 120000"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "mocha": "^10.4.0",
+    "selenium-webdriver": "^4.22.0"
+  }
+}
