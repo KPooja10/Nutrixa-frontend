@@ -1,4 +1,4 @@
-name: Deploy Frontend & E2E Selenium Verification
+name: 🌐 Web & 📱 Android — Deploy & 1100 E2E Verification
 
 on:
   push:
@@ -31,6 +31,7 @@ jobs:
           cache-dependency-path: |
             frontend/package-lock.json
             backend/package-lock.json
+            Nutrixa/NutrixaAppiumE2E/package-lock.json
 
       - name: Install & Start Backend Service
         run: |
@@ -65,15 +66,42 @@ jobs:
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
           GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
 
-      - name: Inject HTML Report into Built Frontend Dist
+      - name: Run E2E Appium Tests (Simulation Fallback)
         run: |
+          cd Nutrixa/NutrixaAppiumE2E
+          npm install
+          npm test
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+
+      - name: Inject HTML and Excel Reports into Built Frontend Dist
+        run: |
+          # Web E2E (Selenium) Reports
           mkdir -p frontend/dist/reports/latest
           mkdir -p frontend/dist/reports/history/build-${{ github.run_number }}
           cp Test_Results/HTML/execution-report.html frontend/dist/reports/latest/execution-report.html
           cp Test_Results/HTML/execution-report.html frontend/dist/reports/history/build-${{ github.run_number }}/execution-report.html
-          # Also copy the Excel report so it is deployable alongside HTML
           mkdir -p frontend/dist/reports/excel
           cp Test_Results/Excel/selenium-report.xlsx frontend/dist/reports/excel/selenium-report.xlsx
+
+          # Android E2E (Appium) Reports
+          mkdir -p frontend/dist/appium-reports/latest
+          mkdir -p frontend/dist/appium-reports/history/build-${{ github.run_number }}
+          cp Nutrixa/Test_Results/HTML/appium-execution-report.html frontend/dist/appium-reports/latest/appium-execution-report.html
+          cp Nutrixa/Test_Results/HTML/appium-execution-report.html frontend/dist/appium-reports/history/build-${{ github.run_number }}/appium-execution-report.html
+          mkdir -p frontend/dist/appium-reports/excel
+          cp Nutrixa/Test_Results/Excel/nutrixa-appium-report.xlsx frontend/dist/appium-reports/excel/nutrixa-appium-report.xlsx
+
+      - name: Upload E2E Test Results Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-verification-results
+          path: |
+            Test_Results/
+            Nutrixa/Test_Results/
+          retention-days: 30
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -86,3 +114,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
