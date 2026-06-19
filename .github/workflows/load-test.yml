@@ -38,10 +38,12 @@ jobs:
           PORT: 5000
 
       - name: Run k6 Load Test
-        uses: grafana/k6-action@v0.3.1
         continue-on-error: true
-        with:
-          filename: backend/tests/load-test.js
+        run: |
+          echo "📥 Downloading k6 binary..."
+          curl -L -s https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz | tar -xz
+          echo "🚀 Executing native k6 load test on host..."
+          ./k6-v0.51.0-linux-amd64/k6 run backend/tests/load-test.js
         env:
           API_BASE_URL: http://localhost:5000
 
