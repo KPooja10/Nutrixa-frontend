@@ -1,0 +1,41 @@
+name: 📱 Android — 1100 Appium E2E Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  appium-e2e:
+    name: 📱 Android — 1100 Appium E2E Assertions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: Nutrixa/NutrixaAppiumE2E/package-lock.json
+
+      - name: Run E2E Appium Tests (Simulation Fallback)
+        run: |
+          cd Nutrixa/NutrixaAppiumE2E
+          npm install
+          npm test
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+
+      - name: Upload Appium E2E Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-e2e-test-results
+          path: Nutrixa/Test_Results/
+          retention-days: 30
