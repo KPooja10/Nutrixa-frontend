@@ -18,7 +18,7 @@ const runRegressionTests = require('./categories/regression');
 const runE2ETests = require('./categories/e2e');
 
 // Configuration
-const BASE_URL = 'http://localhost:5173/PONIS-/';
+const BASE_URL = 'http://localhost:5173/Nutrixa-frontend/';
 const REPORT_PATH = path.join(__dirname, 'e2e-test-report.xlsx');
 
 const results = [];

@@ -36,7 +36,11 @@ module.exports = async function run(driver, step, setReactInput, delay, BASE_URL
           // Empty fields are blocked by HTML5 required attribute or React submission check.
           // Assert that we did not redirect and are still at login gateway
           const currentUrl = await driver.getCurrentUrl();
-          if (!currentUrl.includes('login') && !currentUrl.endsWith('PONIS-/') && !currentUrl.endsWith('PONIS-')) {
+          if (!currentUrl.includes('login') && 
+              !currentUrl.endsWith('PONIS-/') && 
+              !currentUrl.endsWith('PONIS-') && 
+              !currentUrl.endsWith('Nutrixa-frontend/') && 
+              !currentUrl.endsWith('Nutrixa-frontend')) {
             throw new Error(`Invalid authentication redirected to: ${currentUrl}`);
           }
         } else {

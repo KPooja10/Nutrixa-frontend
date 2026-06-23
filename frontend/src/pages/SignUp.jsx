@@ -3,13 +3,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import GlassCard from '../components/GlassCard';
 
-export default function Login() {
-  const { login } = useAuth();
+export default function SignUp() {
+  const { register, login } = useAuth();
   const navigate = useNavigate();
-  
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('patient');
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -18,23 +20,33 @@ export default function Login() {
 
     setLoading(true);
     setError(null);
+    setSuccess(null);
+
     try {
-      const user = await login(username, password);
-      if (user.role === 'doctor') {
-        navigate('/hospital-center');
-      } else {
-        navigate('/');
-      }
+      // 1. Dispatch register call
+      await register(username, password, role);
+      setSuccess('Clinical identity registered successfully! Initiating auto-login...');
+
+      // 2. Perform auto-login after short animation delay
+      setTimeout(async () => {
+        try {
+          const user = await login(username, password);
+          if (user.role === 'doctor') {
+            navigate('/hospital-center');
+          } else {
+            navigate('/');
+          }
+        } catch (loginErr) {
+          setError(loginErr.message || 'Auto-login failed. Please sign in manually.');
+          setSuccess(null);
+        }
+      }, 1500);
+
     } catch (err) {
-      setError(err.message || 'Incorrect credentials. Try the quick presets.');
+      setError(err.message || 'Registration failed. The user ID might already exist.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickSelect = (user, pass) => {
-    setUsername(user);
-    setPassword(pass);
   };
 
   return (
@@ -48,7 +60,7 @@ export default function Login() {
           🧬 <span>PONIS</span>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-white font-sans">
-          Clinical Authentication Gateway
+          Register New Clinical Identity
         </h2>
         <p className="mt-2 text-center text-sm text-slate-400">
           Predictive Oncology Nutrition Intelligence System
@@ -60,6 +72,12 @@ export default function Login() {
           {error && (
             <div className="mb-4 bg-red-950/40 border border-red-500/30 text-red-400 p-3 rounded-lg text-xs font-semibold flex items-center gap-2">
               ⚠️ {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-4 bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 p-3 rounded-lg text-xs font-semibold flex items-center gap-2">
+              ✓ {success}
             </div>
           )}
 
@@ -77,20 +95,15 @@ export default function Login() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition"
-                  placeholder="Enter clinical identifier"
+                  placeholder="Choose clinical identifier (e.g. physician1)"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between items-center">
-                <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Password
-                </label>
-                <Link to="/forgot-password" className="text-xs text-cyan-400 hover:text-cyan-300 transition">
-                  Forgot?
-                </Link>
-              </div>
+              <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                Password
+              </label>
               <div className="mt-2">
                 <input
                   id="password"
@@ -106,6 +119,25 @@ export default function Login() {
             </div>
 
             <div>
+              <label htmlFor="role" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                Clinical Role
+              </label>
+              <div className="mt-2">
+                <select
+                  id="role"
+                  name="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full bg-slate-900/60 border border-slate-700/80 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition"
+                  style={{ colorScheme: 'dark' }}
+                >
+                  <option value="patient" className="bg-slate-900 text-white">🧬 Oncology Patient</option>
+                  <option value="doctor" className="bg-slate-900 text-white">🩺 Medical Staff (Doctor)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
               <button
                 type="submit"
                 disabled={loading}
@@ -114,43 +146,19 @@ export default function Login() {
                 {loading ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Synchronizing Session...
+                    Registering Session...
                   </>
                 ) : (
-                  'Authorize & Enter Dashboard'
+                  'Confirm & Register Credentials'
                 )}
               </button>
             </div>
           </form>
 
-          <div className="mt-4 text-center">
-            <span className="text-xs text-slate-400">First time using PONIS? </span>
-            <Link to="/signup" className="text-xs text-cyan-400 hover:text-cyan-300 font-bold transition">
-              Create an account
+          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center">
+            <Link to="/login" className="text-sm text-cyan-400 hover:text-cyan-300 transition font-bold">
+              ← Return to Authentication Gateway
             </Link>
-          </div>
-
-          {/* Quick preset credentials block to facilitate testing */}
-          <div className="mt-6 pt-6 border-t border-slate-800/80">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 text-center">
-              Quick Presets (Select for Instant Login)
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => handleQuickSelect('doctor', 'doctor123')}
-                className="bg-slate-900/40 hover:bg-slate-800/50 border border-cyan-500/10 hover:border-cyan-500/30 rounded-xl p-3 text-left transition"
-              >
-                <div className="text-cyan-400 text-xs font-bold">🩺 Medical Staff</div>
-                <div className="text-[10px] text-slate-500 mt-1">doctor / doctor123</div>
-              </button>
-              <button
-                onClick={() => handleQuickSelect('patient', 'patient123')}
-                className="bg-slate-900/40 hover:bg-slate-800/50 border border-blue-500/10 hover:border-blue-500/30 rounded-xl p-3 text-left transition"
-              >
-                <div className="text-blue-400 text-xs font-bold">🧬 Oncology Patient</div>
-                <div className="text-[10px] text-slate-500 mt-1">patient / patient123</div>
-              </button>
-            </div>
           </div>
         </GlassCard>
       </div>

@@ -99,7 +99,7 @@ module.exports = async function run(driver, step, setReactInput, delay, BASE_URL
       // Should catch all and redirect to / dashboard (loading console homepage)
       await driver.wait(async () => {
         const url = await driver.getCurrentUrl();
-        return url.endsWith('/') || url.includes('/PONIS-') && !url.includes('redirect');
+        return url.endsWith('/') || (url.includes('/PONIS-') || url.includes('/Nutrixa-frontend')) && !url.includes('redirect');
       }, 8000);
     }
   );

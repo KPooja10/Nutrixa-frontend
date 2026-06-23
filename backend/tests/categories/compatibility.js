@@ -54,10 +54,10 @@ module.exports = async function run(driver, step, setReactInput, delay, BASE_URL
       const submitBtn = await driver.findElement(By.css('button[type="submit"]'));
       await driver.executeScript("arguments[0].click();", submitBtn);
 
-      // Should redirect to Dashboard (/) or (PONIS-/)
+      // Should redirect to Dashboard (/) or (PONIS-/) or (Nutrixa-frontend)
       await driver.wait(async () => {
         const url = await driver.getCurrentUrl();
-        return url.endsWith('/') || url.includes('/PONIS-');
+        return url.endsWith('/') || url.includes('/PONIS-') || url.includes('/Nutrixa-frontend');
       }, 8000);
 
       // Logout patient
