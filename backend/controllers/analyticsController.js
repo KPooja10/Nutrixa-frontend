@@ -1,6 +1,6 @@
 const db = require('../database/connection');
 
-exports.getPatientAnalytics = (req, res) => {
+exports.getPatientAnalytics = async (req, res) => {
   const { patientId } = req.query;
 
   if (!patientId) {
@@ -8,27 +8,35 @@ exports.getPatientAnalytics = (req, res) => {
   }
 
   try {
-    const analytic = db.prepare('SELECT * FROM analytics WHERE patientId = ?').get(patientId);
-    
+    const { rows: analyticsRows } = await db.query(
+      'SELECT * FROM analytics WHERE "patientId" = $1',
+      [patientId]
+    );
+    const analytic = analyticsRows[0] || null;
+
     // Fetch meal compliance for rendering weekly progress charts
-    const meals = db.prepare('SELECT * FROM meal_logs WHERE patientId = ?').all(patientId) || [];
-    const water = db.prepare('SELECT * FROM water_logs WHERE patientId = ?').all(patientId) || [];
+    const { rows: meals } = await db.query(
+      'SELECT * FROM meal_logs WHERE "patientId" = $1',
+      [patientId]
+    );
+    const { rows: water } = await db.query(
+      'SELECT * FROM water_logs WHERE "patientId" = $1',
+      [patientId]
+    );
 
     // Construct a standard, beautiful 7-day adherence report
     const weekdayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const currentDayOfWeek = new Date().getDay(); // 0 is Sun, 1 is Mon...
-    
+    const currentDayOfWeek = new Date().getDay();
+
     const weeklyData = weekdayNames.map((dayName, idx) => {
-      // Calculate realistic scores centered around the patient's baseline
       let compliance = 70;
       let hydration = 65;
       let nutritionScore = 80;
 
       if (analytic) {
-        // Base them on their actual database calculations
         const baseRec = analytic.recovery;
         const baseHyd = analytic.hydration;
-        
+
         compliance = Math.min(100, Math.max(30, baseRec + (idx - currentDayOfWeek) * 3));
         hydration = Math.min(100, Math.max(30, baseHyd + (idx - currentDayOfWeek) * 4));
         nutritionScore = Math.min(100, Math.max(40, baseRec + 5));
@@ -57,11 +65,11 @@ exports.getPatientAnalytics = (req, res) => {
   }
 };
 
-exports.getHospitalSummary = (req, res) => {
+exports.getHospitalSummary = async (req, res) => {
   try {
-    const patients = db.prepare('SELECT * FROM patients').all();
-    const analytics = db.prepare('SELECT * FROM analytics').all();
-    const predictions = db.prepare('SELECT * FROM predictions').all();
+    const { rows: patients } = await db.query('SELECT * FROM patients');
+    const { rows: analytics } = await db.query('SELECT * FROM analytics');
+    const { rows: predictions } = await db.query('SELECT * FROM predictions');
 
     const mergedPatients = patients.map(p => {
       const analytic = analytics.find(a => a.patientId === p.id) || {
@@ -70,7 +78,7 @@ exports.getHospitalSummary = (req, res) => {
         recovery: 72,
         risk: 'Low'
       };
-      
+
       const prediction = predictions.find(pr => pr.patientId === p.id) || {
         fatigueRisk: 'Low',
         recoveryForecast: 75,
@@ -89,13 +97,11 @@ exports.getHospitalSummary = (req, res) => {
       };
     });
 
-    // Compute Command Center dashboard summaries
     const patientCount = mergedPatients.length;
     const highRiskCount = mergedPatients.filter(p => p.risk === 'High').length;
     const mediumRiskCount = mergedPatients.filter(p => p.risk === 'Medium').length;
     const lowRiskCount = mergedPatients.filter(p => p.risk === 'Low').length;
 
-    // Averages
     const avgNutritionCompliance = patientCount > 0
       ? Math.round(mergedPatients.reduce((sum, p) => sum + p.recovery, 0) / patientCount)
       : 80;
@@ -104,7 +110,6 @@ exports.getHospitalSummary = (req, res) => {
       ? Math.round(mergedPatients.reduce((sum, p) => sum + p.hydration, 0) / patientCount)
       : 78;
 
-    // Safety Alert Threshold Generator (for missed meals)
     const alerts = [];
     mergedPatients.forEach(p => {
       if (p.risk === 'High') {

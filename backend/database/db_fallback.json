@@ -47,6 +47,12 @@
       "username": "doctor17",
       "passwordHash": "$2a$10$/41EaJUBas4o8uRoKj0/3uXcA0301qrMqcvYPQ/732MmWtdmAIIT6",
       "role": "doctor"
+    },
+    {
+      "id": 9,
+      "username": "11111",
+      "passwordHash": "$2a$10$dtC.a3zvKAaKHwJZjTL2luRM1kbsOWqboeDDcU/jCTx04Hte4gXY6",
+      "role": "patient"
     }
   ],
   "patients": [

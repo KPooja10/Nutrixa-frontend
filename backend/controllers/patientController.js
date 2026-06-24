@@ -1,9 +1,9 @@
 const db = require('../database/connection');
 
-exports.getAllPatients = (req, res) => {
+exports.getAllPatients = async (req, res) => {
   try {
-    const patients = db.prepare('SELECT * FROM patients').all();
-    const analytics = db.prepare('SELECT * FROM analytics').all();
+    const { rows: patients } = await db.query('SELECT * FROM patients');
+    const { rows: analytics } = await db.query('SELECT * FROM analytics');
 
     // Map analytics data to patient profiles for consolidated listings
     const patientsWithAnalytics = patients.map(p => {
@@ -29,23 +29,35 @@ exports.getAllPatients = (req, res) => {
   }
 };
 
-exports.getPatientById = (req, res) => {
+exports.getPatientById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const patient = db.prepare('SELECT * FROM patients WHERE id = ?').get(id);
-    if (!patient) {
+    const { rows: patientRows } = await db.query(
+      'SELECT * FROM patients WHERE id = $1',
+      [id]
+    );
+    if (patientRows.length === 0) {
       return res.status(404).json({ error: 'Clinical patient record not found.' });
     }
+    const patient = patientRows[0];
 
-    const analytics = db.prepare('SELECT * FROM analytics WHERE patientId = ?').get(id) || {
+    const { rows: analyticsRows } = await db.query(
+      'SELECT * FROM analytics WHERE "patientId" = $1',
+      [id]
+    );
+    const analytics = analyticsRows[0] || {
       energy: 75,
       hydration: 75,
       recovery: 75,
       risk: 'Low'
     };
 
-    const predictions = db.prepare('SELECT * FROM predictions WHERE patientId = ?').get(id) || {
+    const { rows: predictionRows } = await db.query(
+      'SELECT * FROM predictions WHERE "patientId" = $1',
+      [id]
+    );
+    const predictions = predictionRows[0] || {
       fatigueRisk: 'Low',
       recoveryForecast: 75,
       deficiencyRisk: 'None',
@@ -64,7 +76,7 @@ exports.getPatientById = (req, res) => {
   }
 };
 
-exports.createPatient = (req, res) => {
+exports.createPatient = async (req, res) => {
   const { patientName, age, cancerType, stage } = req.body;
 
   if (!patientName || !age || !cancerType || !stage) {
@@ -72,26 +84,39 @@ exports.createPatient = (req, res) => {
   }
 
   try {
-    const result = db.prepare(`
-      INSERT INTO patients (patientName, age, cancerType, stage) 
-      VALUES (?, ?, ?, ?)
-    `).run([patientName, parseInt(age), cancerType, stage]);
-
-    const patientId = result.lastInsertId;
+    const { rows } = await db.query(
+      `INSERT INTO patients ("patientName", age, "cancerType", stage)
+       VALUES ($1, $2, $3, $4) RETURNING id`,
+      [patientName, parseInt(age), cancerType, stage]
+    );
+    const patientId = rows[0].id;
 
     // Immediately initialize standard patient analytics
-    db.prepare(`
-      INSERT OR REPLACE INTO analytics (patientId, energy, hydration, recovery, risk)
-      VALUES (?, 75, 80, 78, 'Low')
-    `).run(patientId);
+    await db.query(
+      `INSERT INTO analytics ("patientId", energy, hydration, recovery, risk)
+       VALUES ($1, 75, 80, 78, 'Low')
+       ON CONFLICT ("patientId") DO UPDATE
+         SET energy = EXCLUDED.energy,
+             hydration = EXCLUDED.hydration,
+             recovery = EXCLUDED.recovery,
+             risk = EXCLUDED.risk`,
+      [patientId]
+    );
 
     // Immediately initialize standard patient predictions
-    db.prepare(`
-      INSERT OR REPLACE INTO predictions (patientId, fatigueRisk, recoveryForecast, deficiencyRisk, energyTrend, hydrationTrend)
-      VALUES (?, 'Low', 80, 'None', 'stable', 'stable')
-    `).run(patientId);
+    await db.query(
+      `INSERT INTO predictions ("patientId", "fatigueRisk", "recoveryForecast", "deficiencyRisk", "energyTrend", "hydrationTrend")
+       VALUES ($1, 'Low', 80, 'None', 'stable', 'stable')
+       ON CONFLICT ("patientId") DO UPDATE
+         SET "fatigueRisk" = EXCLUDED."fatigueRisk",
+             "recoveryForecast" = EXCLUDED."recoveryForecast",
+             "deficiencyRisk" = EXCLUDED."deficiencyRisk",
+             "energyTrend" = EXCLUDED."energyTrend",
+             "hydrationTrend" = EXCLUDED."hydrationTrend"`,
+      [patientId]
+    );
 
-    // Pre-populate some standard meal templates to track completion
+    // Pre-populate standard meal templates
     const mealTemplates = [
       { type: 'early_morning', name: 'Warm Ginger Tea & Almonds', score: 95 },
       { type: 'breakfast', name: 'High-Protein Oatmeal with Berries', score: 90 },
@@ -102,17 +127,18 @@ exports.createPatient = (req, res) => {
     ];
 
     for (const meal of mealTemplates) {
-      db.prepare(`
-        INSERT INTO meal_logs (patientId, mealType, mealName, completed, nutritionScore)
-        VALUES (?, ?, ?, 0, ?)
-      `).run([patientId, meal.type, meal.name, meal.score]);
+      await db.query(
+        `INSERT INTO meal_logs ("patientId", "mealType", "mealName", completed, "nutritionScore")
+         VALUES ($1, $2, $3, FALSE, $4)`,
+        [patientId, meal.type, meal.name, meal.score]
+      );
     }
 
     // Initialize an initial water entry
-    db.prepare(`
-      INSERT INTO water_logs (patientId, intake)
-      VALUES (?, 0)
-    `).run([patientId]);
+    await db.query(
+      'INSERT INTO water_logs ("patientId", intake) VALUES ($1, 0)',
+      [patientId]
+    );
 
     res.status(201).json({
       success: true,

@@ -1,7 +1,7 @@
 const db = require('../database/connection');
 const aiService = require('../services/aiService');
 
-exports.getPatientMeals = (req, res) => {
+exports.getPatientMeals = async (req, res) => {
   const { patientId } = req.query;
 
   if (!patientId) {
@@ -9,8 +9,11 @@ exports.getPatientMeals = (req, res) => {
   }
 
   try {
-    const meals = db.prepare('SELECT * FROM meal_logs WHERE patientId = ? ORDER BY id DESC').all(patientId);
-    res.status(200).json(meals);
+    const { rows } = await db.query(
+      'SELECT * FROM meal_logs WHERE "patientId" = $1 ORDER BY id DESC',
+      [patientId]
+    );
+    res.status(200).json(rows);
   } catch (error) {
     console.error('Fetch Meals Error:', error);
     res.status(500).json({ error: 'Server error retrieving meal tracking history.' });
@@ -25,10 +28,11 @@ exports.logMeal = async (req, res) => {
   }
 
   try {
-    db.prepare(`
-      INSERT INTO meal_logs (patientId, mealType, mealName, completed, nutritionScore)
-      VALUES (?, ?, ?, ?, ?)
-    `).run([patientId, mealType, mealName, completed ? 1 : 0, nutritionScore]);
+    await db.query(
+      `INSERT INTO meal_logs ("patientId", "mealType", "mealName", completed, "nutritionScore")
+       VALUES ($1, $2, $3, $4, $5)`,
+      [patientId, mealType, mealName, completed ? true : false, nutritionScore]
+    );
 
     // Dynamic AI prognosis update
     await aiService.calculatePatientPredictions(patientId);
@@ -49,11 +53,12 @@ exports.toggleMealCompletion = async (req, res) => {
   }
 
   try {
-    // 1. Fetch meal details first to get patientId
-    // Standard SELECT to extract fields
-    const query = 'SELECT * FROM meal_logs WHERE id = ' + parseInt(mealId);
-    // Let's use simple statement to get details
-    let meal = db.prepare('SELECT * FROM meal_logs').all().find(m => m.id === parseInt(mealId));
+    // Fetch meal details to get patientId
+    const { rows } = await db.query(
+      'SELECT * FROM meal_logs WHERE id = $1',
+      [parseInt(mealId)]
+    );
+    const meal = rows[0];
 
     if (!meal) {
       return res.status(404).json({ error: 'Meal log record not found.' });
@@ -61,10 +66,13 @@ exports.toggleMealCompletion = async (req, res) => {
 
     const patientId = meal.patientId;
 
-    // 2. Perform UPDATE
-    db.prepare('UPDATE meal_logs SET completed = ? WHERE id = ?').run([completed ? 1 : 0, mealId]);
+    // Perform UPDATE
+    await db.query(
+      'UPDATE meal_logs SET completed = $1 WHERE id = $2',
+      [completed ? true : false, mealId]
+    );
 
-    // 3. Recalculate predictive indexes
+    // Recalculate predictive indexes
     await aiService.calculatePatientPredictions(patientId);
 
     res.status(200).json({
@@ -77,7 +85,7 @@ exports.toggleMealCompletion = async (req, res) => {
   }
 };
 
-exports.getWaterLogs = (req, res) => {
+exports.getWaterLogs = async (req, res) => {
   const { patientId } = req.query;
 
   if (!patientId) {
@@ -85,8 +93,11 @@ exports.getWaterLogs = (req, res) => {
   }
 
   try {
-    const water = db.prepare('SELECT * FROM water_logs WHERE patientId = ? ORDER BY id DESC').all(patientId);
-    res.status(200).json(water);
+    const { rows } = await db.query(
+      'SELECT * FROM water_logs WHERE "patientId" = $1 ORDER BY id DESC',
+      [patientId]
+    );
+    res.status(200).json(rows);
   } catch (error) {
     console.error('Fetch Water Logs Error:', error);
     res.status(500).json({ error: 'Server error retrieving water ingestion history.' });
@@ -101,7 +112,10 @@ exports.logWaterIntake = async (req, res) => {
   }
 
   try {
-    db.prepare('INSERT INTO water_logs (patientId, intake) VALUES (?, ?)').run([patientId, parseInt(intake)]);
+    await db.query(
+      'INSERT INTO water_logs ("patientId", intake) VALUES ($1, $2)',
+      [patientId, parseInt(intake)]
+    );
 
     // Recalculate predictive indices based on hydration updates
     await aiService.calculatePatientPredictions(patientId);

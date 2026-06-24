@@ -4,7 +4,7 @@ const db = require('../database/connection');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ponis_clinical_secret_key_2026_xyz';
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   const { username, password, role } = req.body;
 
   if (!username || !password) {
@@ -12,8 +12,11 @@ exports.register = (req, res) => {
   }
 
   try {
-    const existingUser = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
-    if (existingUser) {
+    const { rows: existing } = await db.query(
+      'SELECT id FROM users WHERE username = $1',
+      [username]
+    );
+    if (existing.length > 0) {
       return res.status(400).json({ error: 'Username already registered in database.' });
     }
 
@@ -21,14 +24,15 @@ exports.register = (req, res) => {
     const passwordHash = bcrypt.hashSync(password, salt);
     const assignedRole = role || 'patient';
 
-    const result = db.prepare('INSERT INTO users (username, passwordHash, role) VALUES (?, ?, ?)').run([
-      username, passwordHash, assignedRole
-    ]);
+    const { rows } = await db.query(
+      'INSERT INTO users (username, "passwordHash", role) VALUES ($1, $2, $3) RETURNING id',
+      [username, passwordHash, assignedRole]
+    );
 
-    res.status(201).json({ 
-      success: true, 
+    res.status(201).json({
+      success: true,
       message: 'Account successfully registered.',
-      userId: result.lastInsertId 
+      userId: rows[0].id
     });
   } catch (error) {
     console.error('Registration Error:', error);
@@ -36,7 +40,7 @@ exports.register = (req, res) => {
   }
 };
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -44,7 +48,11 @@ exports.login = (req, res) => {
   }
 
   try {
-    const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
+    const { rows } = await db.query(
+      'SELECT * FROM users WHERE username = $1',
+      [username]
+    );
+    const user = rows[0];
     if (!user) {
       return res.status(401).json({ error: 'Invalid username credentials.' });
     }
@@ -54,7 +62,6 @@ exports.login = (req, res) => {
       return res.status(401).json({ error: 'Invalid password credentials.' });
     }
 
-    // Generate JWT
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
       JWT_SECRET,

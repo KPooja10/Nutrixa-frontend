@@ -3,23 +3,27 @@ const db = require('./connection');
 const fs = require('fs');
 const path = require('path');
 
-function runSeed() {
+async function runSeed() {
   console.log('[PONIS DB] Checking database and seeding initial clinical data...');
 
   try {
-    // 1. Initialize schema if running native SQLite
+    // 1. Initialize schema
     const schemaPath = path.join(__dirname, 'schema.sql');
     if (fs.existsSync(schemaPath)) {
       const sql = fs.readFileSync(schemaPath, 'utf8');
-      db.exec(sql);
+      await db.exec(sql);
+      console.log('[PONIS DB] Schema applied successfully.');
     }
   } catch (err) {
     console.error('Error applying SQL schema:', err);
   }
 
   // 2. Check if users are already seeded
-  const existingUser = db.prepare('SELECT * FROM users WHERE username = ?').get('doctor');
-  if (existingUser) {
+  const { rows: existingUsers } = await db.query(
+    'SELECT id FROM users WHERE username = $1',
+    ['doctor']
+  );
+  if (existingUsers.length > 0) {
     console.log('[PONIS DB] Database already contains data. Seeding skipped.');
     return;
   }
@@ -32,8 +36,14 @@ function runSeed() {
   const patientHash = bcrypt.hashSync('patient123', salt);
 
   // Insert Users
-  db.prepare('INSERT INTO users (username, passwordHash, role) VALUES (?, ?, ?)').run(['doctor', doctorHash, 'doctor']);
-  db.prepare('INSERT INTO users (username, passwordHash, role) VALUES (?, ?, ?)').run(['patient', patientHash, 'patient']);
+  await db.query(
+    'INSERT INTO users (username, "passwordHash", role) VALUES ($1, $2, $3)',
+    ['doctor', doctorHash, 'doctor']
+  );
+  await db.query(
+    'INSERT INTO users (username, "passwordHash", role) VALUES ($1, $2, $3)',
+    ['patient', patientHash, 'patient']
+  );
 
   // Insert Patients
   const patientsToInsert = [
@@ -45,24 +55,33 @@ function runSeed() {
 
   const addedPatients = [];
   for (const p of patientsToInsert) {
-    const res = db.prepare('INSERT INTO patients (patientName, age, cancerType, stage) VALUES (?, ?, ?, ?)').run([
-      p.name, p.age, p.cancer, p.stage
-    ]);
-    addedPatients.push({ id: res.lastInsertId, ...p });
+    const { rows } = await db.query(
+      `INSERT INTO patients ("patientName", age, "cancerType", stage)
+       VALUES ($1, $2, $3, $4) RETURNING id`,
+      [p.name, p.age, p.cancer, p.stage]
+    );
+    addedPatients.push({ id: rows[0].id, ...p });
   }
 
   // Insert Analytics for each patient
   const patientAnalytics = [
-    { pId: addedPatients[0].id, energy: 65, hydration: 78, recovery: 70, risk: 'Medium' }, // Alexander Vance
-    { pId: addedPatients[1].id, energy: 85, hydration: 92, recovery: 88, risk: 'Low' },    // Elena Rostova
-    { pId: addedPatients[2].id, energy: 40, hydration: 55, recovery: 48, risk: 'High' },   // Marcus Chen
-    { pId: addedPatients[3].id, energy: 75, hydration: 80, recovery: 82, risk: 'Low' }     // Sarah Jenkins
+    { pId: addedPatients[0].id, energy: 65, hydration: 78, recovery: 70, risk: 'Medium' },
+    { pId: addedPatients[1].id, energy: 85, hydration: 92, recovery: 88, risk: 'Low' },
+    { pId: addedPatients[2].id, energy: 40, hydration: 55, recovery: 48, risk: 'High' },
+    { pId: addedPatients[3].id, energy: 75, hydration: 80, recovery: 82, risk: 'Low' }
   ];
 
   for (const a of patientAnalytics) {
-    db.prepare('INSERT OR REPLACE INTO analytics (patientId, energy, hydration, recovery, risk) VALUES (?, ?, ?, ?, ?)').run([
-      a.pId, a.energy, a.hydration, a.recovery, a.risk
-    ]);
+    await db.query(
+      `INSERT INTO analytics ("patientId", energy, hydration, recovery, risk)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT ("patientId") DO UPDATE
+         SET energy = EXCLUDED.energy,
+             hydration = EXCLUDED.hydration,
+             recovery = EXCLUDED.recovery,
+             risk = EXCLUDED.risk`,
+      [a.pId, a.energy, a.hydration, a.recovery, a.risk]
+    );
   }
 
   // Insert AI Predictions for each patient
@@ -74,12 +93,20 @@ function runSeed() {
   ];
 
   for (const p of patientPredictions) {
-    db.prepare('INSERT OR REPLACE INTO predictions (patientId, fatigueRisk, recoveryForecast, deficiencyRisk, energyTrend, hydrationTrend) VALUES (?, ?, ?, ?, ?, ?)').run([
-      p.pId, p.fatigueRisk, p.recoveryForecast, p.deficiencyRisk, p.energyTrend, p.hydrationTrend
-    ]);
+    await db.query(
+      `INSERT INTO predictions ("patientId", "fatigueRisk", "recoveryForecast", "deficiencyRisk", "energyTrend", "hydrationTrend")
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT ("patientId") DO UPDATE
+         SET "fatigueRisk" = EXCLUDED."fatigueRisk",
+             "recoveryForecast" = EXCLUDED."recoveryForecast",
+             "deficiencyRisk" = EXCLUDED."deficiencyRisk",
+             "energyTrend" = EXCLUDED."energyTrend",
+             "hydrationTrend" = EXCLUDED."hydrationTrend"`,
+      [p.pId, p.fatigueRisk, p.recoveryForecast, p.deficiencyRisk, p.energyTrend, p.hydrationTrend]
+    );
   }
 
-  // Insert standard meal logs & water logs to show dynamic compliance charts
+  // Insert standard meal logs & water logs
   const mealTypes = [
     { type: 'early_morning', name: 'Warm Ginger Tea & Almonds', score: 95 },
     { type: 'breakfast', name: 'High-Protein Oatmeal with Berries', score: 90 },
@@ -90,28 +117,28 @@ function runSeed() {
   ];
 
   for (const patient of addedPatients) {
-    // Generate logs for last 3 days
     for (let dayOffset = 0; dayOffset < 3; dayOffset++) {
       for (const meal of mealTypes) {
-        // High risk patient (Marcus) misses some meals, low risk patient completes all
-        let completed = 1;
+        let completed = true;
         if (patient.id === addedPatients[2].id && (meal.type === 'breakfast' || meal.type === 'dinner') && dayOffset === 0) {
-          completed = 0; // Missed
+          completed = false;
         }
         if (patient.id === addedPatients[0].id && meal.type === 'evening_drink' && dayOffset === 1) {
-          completed = 0; // Missed
+          completed = false;
         }
 
-        db.prepare('INSERT INTO meal_logs (patientId, mealType, mealName, completed, nutritionScore) VALUES (?, ?, ?, ?, ?)').run([
-          patient.id, meal.type, meal.name, completed, meal.score
-        ]);
+        await db.query(
+          `INSERT INTO meal_logs ("patientId", "mealType", "mealName", completed, "nutritionScore")
+           VALUES ($1, $2, $3, $4, $5)`,
+          [patient.id, meal.type, meal.name, completed, meal.score]
+        );
       }
 
-      // Add water intake logs
       const waterIntake = patient.id === addedPatients[2].id ? 1200 : 2500;
-      db.prepare('INSERT INTO water_logs (patientId, intake) VALUES (?, ?)').run([
-        patient.id, waterIntake + (dayOffset * 100)
-      ]);
+      await db.query(
+        'INSERT INTO water_logs ("patientId", intake) VALUES ($1, $2)',
+        [patient.id, waterIntake + (dayOffset * 100)]
+      );
     }
   }
 

@@ -37,13 +37,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database seeding initialization
-try {
-  runSeed();
-} catch (error) {
-  console.error('[PONIS DB] Critical error seeding tables:', error);
-}
-
 // Define API Endpoints
 app.use('/auth', authRoutes);
 app.use('/patients', patientRoutes);
@@ -62,11 +55,19 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'An unexpected internal error has occurred.' });
 });
 
-// Start Express Listener
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(`🚀 PONIS REST API server successfully booted and online`);
-  console.log(`   Local Address: http://localhost:${PORT}`);
-  console.log(`   Health Check:  http://localhost:${PORT}/health`);
-  console.log(`=======================================================`);
-});
+// Start Express Listener and seed database
+(async () => {
+  try {
+    await runSeed();
+  } catch (error) {
+    console.error('[PONIS DB] Critical error seeding tables:', error);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`=======================================================`);
+    console.log(`🚀 PONIS REST API server successfully booted and online`);
+    console.log(`   Local Address: http://localhost:${PORT}`);
+    console.log(`   Health Check:  http://localhost:${PORT}/health`);
+    console.log(`=======================================================`);
+  });
+})();

@@ -4,13 +4,12 @@ const db = require('../database/connection');
  * AI Services containing oncology nutrition & biometric simulation algorithms
  */
 class AIService {
-  
+
   /**
    * Simulates computer vision food item scanning and nutritional evaluation
    * @param {String} imagePlaceholder - Mock file or metadata
    */
   async classifyFoodImage(imagePlaceholder) {
-    // List of potential food detections to simulate realistic models
     const library = [
       {
         foodItem: 'Mediterranean Salmon Salad',
@@ -62,11 +61,9 @@ class AIService {
       }
     ];
 
-    // Pick a random food item to simulate high-tech computer vision scanning
     const randomIndex = Math.floor(Math.random() * library.length);
     const result = library[randomIndex];
-    
-    // Simulate minor network delay
+
     await new Promise(resolve => setTimeout(resolve, 1500));
     return result;
   }
@@ -75,14 +72,12 @@ class AIService {
    * Simulates facial scanning to estimate systemic indicators from key clinical biometrics
    */
   async analyzeFaceBiometrics() {
-    // Generate realistic biometric readouts
-    const fatigue = Math.floor(35 + Math.random() * 45); // 35% - 80%
-    const stress = Math.floor(40 + Math.random() * 40);  // 40% - 80%
-    const hydration = Math.floor(50 + Math.random() * 45); // 50% - 95%
-    const recovery = Math.floor(45 + Math.random() * 45);  // 45% - 90%
-    const energy = Math.floor(40 + Math.random() * 50);    // 40% - 90%
+    const fatigue = Math.floor(35 + Math.random() * 45);
+    const stress = Math.floor(40 + Math.random() * 40);
+    const hydration = Math.floor(50 + Math.random() * 45);
+    const recovery = Math.floor(45 + Math.random() * 45);
+    const energy = Math.floor(40 + Math.random() * 50);
 
-    // Simulate analysis delay
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     return {
@@ -97,7 +92,7 @@ class AIService {
         facialMicroExpressionTension: stress > 65 ? 'Elevated' : 'Stable',
         vascularFlowIndex: energy < 55 ? 'Hypo-active' : 'Optimal'
       },
-      clinicalNote: fatigue > 65 || hydration < 60 
+      clinicalNote: fatigue > 65 || hydration < 60
         ? 'High fatigue signature with sub-optimal dermal hydration detected. Clinical team suggests oral rehydration therapy and resting interval increments.'
         : 'Biometric parameters stable. Dermal hydration and micro-expression indices indicate positive recovery.'
     };
@@ -105,18 +100,24 @@ class AIService {
 
   /**
    * Generates analytical predictions based on current patient logs
-   * @param {Number} patientId 
+   * @param {Number} patientId
    */
   async calculatePatientPredictions(patientId) {
     const pId = parseInt(patientId);
 
     // Fetch meal compliance from logs
-    const meals = db.prepare('SELECT * FROM meal_logs WHERE patientId = ?').all(pId) || [];
-    const water = db.prepare('SELECT * FROM water_logs WHERE patientId = ?').all(pId) || [];
+    const { rows: meals } = await db.query(
+      'SELECT * FROM meal_logs WHERE "patientId" = $1',
+      [pId]
+    );
+    const { rows: water } = await db.query(
+      'SELECT * FROM water_logs WHERE "patientId" = $1',
+      [pId]
+    );
 
     // Calculate actual compliance
     const totalMeals = meals.length;
-    const completedMeals = meals.filter(m => m.completed === 1).length;
+    const completedMeals = meals.filter(m => m.completed === true).length;
     const complianceRate = totalMeals > 0 ? (completedMeals / totalMeals) * 100 : 75;
 
     // Calculate hydration
@@ -154,21 +155,35 @@ class AIService {
       hydrationTrend = 'improving';
     }
 
-    // Save/Update in predictions table
-    db.prepare(`
-      INSERT OR REPLACE INTO predictions (patientId, fatigueRisk, recoveryForecast, deficiencyRisk, energyTrend, hydrationTrend)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run([pId, fatigueRisk, recoveryForecast, deficiencyRisk, energyTrend, hydrationTrend]);
+    // Save/Update predictions table (PostgreSQL upsert)
+    await db.query(
+      `INSERT INTO predictions ("patientId", "fatigueRisk", "recoveryForecast", "deficiencyRisk", "energyTrend", "hydrationTrend")
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT ("patientId") DO UPDATE
+         SET "fatigueRisk" = EXCLUDED."fatigueRisk",
+             "recoveryForecast" = EXCLUDED."recoveryForecast",
+             "deficiencyRisk" = EXCLUDED."deficiencyRisk",
+             "energyTrend" = EXCLUDED."energyTrend",
+             "hydrationTrend" = EXCLUDED."hydrationTrend"`,
+      [pId, fatigueRisk, recoveryForecast, deficiencyRisk, energyTrend, hydrationTrend]
+    );
 
-    // Save/Update in analytics table based on calculated trends
+    // Save/Update analytics table
     const updatedEnergy = Math.floor(recoveryForecast * 0.9);
     const updatedHydration = Math.min(100, Math.floor(averageWater / 25));
     const riskLevel = fatigueRisk === 'High' ? 'High' : (fatigueRisk === 'Medium' ? 'Medium' : 'Low');
-    
-    db.prepare(`
-      INSERT OR REPLACE INTO analytics (patientId, energy, hydration, recovery, risk)
-      VALUES (?, ?, ?, ?, ?)
-    `).run([pId, updatedEnergy, updatedHydration, recoveryForecast, riskLevel]);
+
+    await db.query(
+      `INSERT INTO analytics ("patientId", energy, hydration, recovery, risk)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT ("patientId") DO UPDATE
+         SET energy = EXCLUDED.energy,
+             hydration = EXCLUDED.hydration,
+             recovery = EXCLUDED.recovery,
+             risk = EXCLUDED.risk,
+             "updatedAt" = NOW()`,
+      [pId, updatedEnergy, updatedHydration, recoveryForecast, riskLevel]
+    );
 
     return {
       patientId: pId,

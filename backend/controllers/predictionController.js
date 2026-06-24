@@ -1,7 +1,7 @@
 const db = require('../database/connection');
 const aiService = require('../services/aiService');
 
-exports.getPatientPredictions = (req, res) => {
+exports.getPatientPredictions = async (req, res) => {
   const { patientId } = req.query;
 
   if (!patientId) {
@@ -9,8 +9,12 @@ exports.getPatientPredictions = (req, res) => {
   }
 
   try {
-    const prediction = db.prepare('SELECT * FROM predictions WHERE patientId = ?').get(patientId);
-    
+    const { rows } = await db.query(
+      'SELECT * FROM predictions WHERE "patientId" = $1',
+      [patientId]
+    );
+    const prediction = rows[0];
+
     // Provide default safe profile if not yet created in table
     res.status(200).json(prediction || {
       patientId: parseInt(patientId),
@@ -48,7 +52,6 @@ exports.recalculatePredictions = async (req, res) => {
 
 exports.scanFoodImage = async (req, res) => {
   try {
-    // Execute simulated computer vision food scan
     const foodReport = await aiService.classifyFoodImage();
     res.status(200).json(foodReport);
   } catch (error) {
@@ -59,7 +62,6 @@ exports.scanFoodImage = async (req, res) => {
 
 exports.scanFaceAnalysis = async (req, res) => {
   try {
-    // Execute simulated face mesh biometrics analysis
     const biometricReport = await aiService.analyzeFaceBiometrics();
     res.status(200).json(biometricReport);
   } catch (error) {
